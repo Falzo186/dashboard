@@ -78,7 +78,14 @@ export function Sidebar() {
       color: 'bg-cyan-500',
       enabled: true,
       path: '/casos/empleados'
-    }
+    },
+    {
+      id: 'caso10',
+      name: 'Análisis de Variantes',
+      color: 'bg-lime-500',
+      enabled: true,
+      path: '/casos/variantes'
+    },
   ]
 
   const isActive = (path: string) => {

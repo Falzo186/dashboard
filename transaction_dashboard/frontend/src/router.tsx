@@ -11,6 +11,7 @@ import { PagosPage } from './features/casos/pagos'
 import { DevolucionesPage } from './features/casos/devoluciones'
 import { DescuentosPage } from './features/casos/descuentos/pages/DescuentosPage'
 import { EmpleadosPage } from './features/casos/empleados'
+import { VariantesPage } from './features/casos/variantes/pages/VariantesPage'
 
 export const router = createBrowserRouter([
   {
@@ -28,7 +29,6 @@ export const router = createBrowserRouter([
             path: 'horarios',
             element: <HorariosPage />,
           },
-          // Future use cases will be added here
           {
              path: 'caducidad',
              element: <CaducidadPage />,
@@ -46,34 +46,35 @@ export const router = createBrowserRouter([
             element: <InventarioPage />
           },
           {
-            path: 'Pagos',
+            path: 'pagos',
             element: <PagosPage />
           },
           {
-            path: 'Devoluciones',
+            path: 'devoluciones',
             element: <DevolucionesPage />
           },
           {
             path: 'descuentos',
             element: <DescuentosPage />
-          }
-          ,
+          },
           {
             path: 'empleados',
             element: <EmpleadosPage />
+          },
+          {
+            path: 'variantes',
+            element: <VariantesPage />
           }
         ],
       },
-      // Redirect old route for backwards compatibility
       {
         path: 'patrones',
         element: <Navigate to="/casos/horarios" replace />,
       },
-      // Catch-all 404 route
-      {
-        path: '*',
-        element: <Navigate to="/" replace />,
-      },
     ],
   },
+  {
+    path: '*',
+    element: <Navigate to="/" replace />,
+  }
 ])

@@ -14,6 +14,7 @@ import pagosRoutes from './pagos.routes';
 import { devolucionesRoutes } from './devoluciones.routes';
 import { descuentosRoutes } from './descuentos.routes';
 import { empleadosRoutes } from './empleados.routes';
+import { variantesRoutes } from './variantes.routes';
 
 const router = Router();
 
@@ -58,8 +59,13 @@ router.use(`${apiPrefix}/${apiVersion}/casos/devoluciones`, devolucionesRoutes);
 
 // CASO 8: Descuentos ⏸️
 router.use(`${apiPrefix}/${apiVersion}/casos/descuentos`, descuentosRoutes);
+
 // CASO 9: Identificación Empleados ✅
 router.use(`${apiPrefix}/${apiVersion}/casos/empleados`, empleadosRoutes);
+
+// CASO 10: Análisis de Variantes
+router.use(`${apiPrefix}/${apiVersion}/casos/variantes`, variantesRoutes);
+
 
 // ===================================
 // API INFO ROUTE
@@ -79,7 +85,9 @@ router.get(`${apiPrefix}`, (_req, res) => {
         inventario: `${apiPrefix}/${apiVersion}/casos/inventario`, // ⏸️ Futuro
         pagos: `${apiPrefix}/${apiVersion}/casos/pagos`, // ⏸️ Futuro
         devoluciones: `${apiPrefix}/${apiVersion}/casos/devoluciones`, // ⏸️ Futuro
-        descuentos: `${apiPrefix}/${apiVersion}/casos/descuentos` // ⏸️ Futuro
+        descuentos: `${apiPrefix}/${apiVersion}/casos/descuentos`, // ⏸️ Futuro
+        empleados: `${apiPrefix}/${apiVersion}/casos/empleados`, // ✅ Activo
+        variantes: `${apiPrefix}/${apiVersion}/casos/variantes` // 🆕 Activo
       }
     },
     documentation: `${apiPrefix}/docs`,
