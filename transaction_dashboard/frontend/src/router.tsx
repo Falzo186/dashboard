@@ -1,7 +1,6 @@
 // frontend/src/router.tsx
 import { createBrowserRouter, Navigate } from 'react-router-dom'
 import { MainLayout } from './components/layout/MainLayout'
-import { DashboardHomePage } from './features/dashboard'
 import { HorariosPage } from './features/casos/horarios'
 import { CaducidadPage } from './features/casos/caducidad/pages/CaducidadPage'
 import { PreciosPage } from './features/casos/precios' 
@@ -12,6 +11,7 @@ import { DevolucionesPage } from './features/casos/devoluciones'
 import { DescuentosPage } from './features/casos/descuentos/pages/DescuentosPage'
 import { EmpleadosPage } from './features/casos/empleados'
 import { VariantesPage } from './features/casos/variantes/pages/VariantesPage'
+import { DashboardHomePage } from './features/dashboard/pages/DashboardHomePage'
 
 export const router = createBrowserRouter([
   {

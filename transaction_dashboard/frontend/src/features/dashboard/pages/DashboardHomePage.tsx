@@ -1,242 +1,162 @@
-// frontend/src/features/dashboard/pages/DashboardHomePage.tsx
-import React, { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { useDashboardMetrics } from '../hooks/useDashboardMetrics'
-import { 
-  Button, 
-  Card, 
-  Badge, 
-  Modal 
-} from '../../../components/ui'
+// frontend/src/pages/DashboardHomePage.tsx
 
-/**
- * DashboardHomePage Component
- * 
- * Main dashboard page showing:
- * - Key metrics overview (transactions, ROI, customers)
- * - Quick access buttons to all use cases
- * - System status
- * - Quick actions
- * - Project progress tracker
- */
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useDashboardAnalytics } from '../hooks/useDashboardAnalythics';
+import { DashboardMetrics } from '../Components/DashboardMetrics';
+import { SalesOverTimeChart } from '../Components/SalesOverTImeChart';
+import { HourlyDistributionChart } from '../Components/HourlyDistributionChart';
+import { PaymentMethodsChart } from '../Components/PaymentMethodsChart';
+import { QuickAccessGrid } from '../Components/QuickAccessGrid';
+import { TopProductsChart } from '../Components/TopProducts';
+
+
 export const DashboardHomePage: React.FC = () => {
-  const navigate = useNavigate()
-  const { 
-    data: metrics, 
-    isLoading: metricsLoading,
-    error: metricsError
-  } = useDashboardMetrics()
+  const navigate = useNavigate();
+  const { data, isLoading, isError, refetch } = useDashboardAnalytics();
 
-  const [isModalOpen, setIsModalOpen] = useState(false)
+  // Loading state
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-20 w-20 border-b-4 border-indigo-600 mx-auto mb-6"></div>
+          <p className="text-xl text-gray-700 font-medium">Cargando analíticas...</p>
+        </div>
+      </div>
+    );
+  }
 
-  // Limpieza: eliminar mensajes de debug
+  // Error state
+  if (isError) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-red-50 to-pink-100">
+        <div className="bg-white rounded-2xl shadow-2xl p-8 max-w-md border-2 border-red-200">
+          <div className="text-center mb-6">
+            <h3 className="text-2xl font-bold text-red-900 mb-2">Error de Conexión</h3>
+            <p className="text-red-700 mb-4">
+              No se pudo conectar con el backend. Verifica que el servidor esté corriendo.
+            </p>
+            <code className="text-sm bg-red-50 px-3 py-1 rounded">
+              http://localhost:3001
+            </code>
+          </div>
+          <button
+            onClick={() => refetch()}
+            className="w-full bg-red-600 text-white px-6 py-3 rounded-lg hover:bg-red-700 transition font-medium"
+          >
+            Reintentar Conexión
+          </button>
+        </div>
+      </div>
+    );
+  }
 
-  // Determinar si hay datos válidos
-  const hasValidData = metrics && !metricsLoading && !metricsError
+  // No data state
+  if (!data) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <h3 className="text-xl font-medium text-gray-900 mb-2">
+            No hay datos disponibles
+          </h3>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div className="space-y-8">
-      {/* Header Section */}
-      <div>
-        <div className="flex items-center justify-between mb-4">
-          <div>
-            <h1 className="text-3xl font-bold text-blue-700 mb-1">
-              <span className="font-bold text-blue-700">Dashboard Principal</span>
-            </h1>
-            <p className="text-xl text-gray-700 font-semibold mb-2">
-              Vista general del sistema de análisis de transacciones
-            </p>
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-indigo-50">
+      {/* Hero Header */}
+      <div className="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 text-white">
+        <div className="max-w-7xl mx-auto px-8 py-8">
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-4xl font-bold mb-2">
+                Dashboard de Análisis
+              </h1>
+              <p className="text-xl text-indigo-100">
+                Vista general del negocio con datos en tiempo real
+              </p>
+            </div>
+            <button
+              onClick={() => refetch()}
+              className="bg-white/20 hover:bg-white/30 backdrop-blur-sm px-6 py-3 rounded-xl transition font-medium"
+            >
+              Actualizar
+            </button>
           </div>
         </div>
       </div>
 
-      {/* Error Alert */}
-      {metricsError && (
-        <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-          <div className="flex items-center gap-3">
-            <span className="text-2xl">⚠️</span>
-            <div>
-              <h3 className="font-semibold text-red-900">Error de Conexión</h3>
-              <p className="text-sm text-red-700">
-                No se pudo conectar con el backend. Verifica que el servidor esté corriendo en http://localhost:3001
-              </p>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-        <Card padding="md" hover className="bg-blue-50 border border-blue-200">
-          <div className="flex items-center gap-3">
-            <div className="text-3xl">📊</div>
-            <div>
-              <p className="text-base font-bold text-blue-700 mb-1">Total Transacciones</p>
-              <p className="text-2xl font-bold text-blue-600">
-                {metricsLoading ? (
-                  <span className="animate-pulse">...</span>
-                ) : metricsError ? (
-                  <span className="text-red-600">Error</span>
-                ) : (
-                  metrics?.totalTransactions?.value || 'N/A'
-                )}
-              </p>
-            </div>
-          </div>
-        </Card>
-
-        <Card padding="md" hover className="bg-green-50 border border-green-200">
-          <div className="flex items-center gap-3">
-            <div className="text-3xl">💰</div>
-            <div>
-              <p className="text-base font-bold text-green-700 mb-1">ROI Anual</p>
-              <p className="text-2xl font-bold text-green-600">
-                {metricsLoading ? (
-                  <span className="animate-pulse">...</span>
-                ) : metricsError ? (
-                  <span className="text-red-600">Error</span>
-                ) : (
-                  metrics?.annualROI?.value || 'N/A'
-                )}
-              </p>
-            </div>
-          </div>
-        </Card>
-
-        <Card padding="md" hover className="bg-purple-50 border border-purple-200">
-          <div className="flex items-center gap-3">
-            <div className="text-3xl">👥</div>
-            <div>
-              <p className="text-base font-bold text-purple-700 mb-1">Clientes Únicos</p>
-              <p className="text-2xl font-bold text-purple-600">
-                {metricsLoading ? (
-                  <span className="animate-pulse">...</span>
-                ) : metricsError ? (
-                  <span className="text-red-600">Error</span>
-                ) : hasValidData && metrics?.uniqueCustomers?.value ? (
-                  metrics.uniqueCustomers.value
-                ) : (
-                  <span className="text-gray-400">No disponible</span>
-                )}
-              </p>
-            </div>
-          </div>
-        </Card>
-
-        <Card padding="md" hover className="bg-orange-50 border border-orange-200">
-          <div className="flex items-center gap-3">
-            <div className="text-3xl">✅</div>
-            <div>
-              <p className="text-base font-bold text-orange-700 mb-1">Casos Completados</p>
-              <p className="text-2xl font-bold text-orange-600">
-                {metricsLoading ? (
-                  <span className="animate-pulse">...</span>
-                ) : metricsError ? (
-                  <span className="text-red-600">Error</span>
-                ) : hasValidData && metrics?.completionRate?.value ? (
-                  metrics.completionRate.value
-                ) : (
-                  <span className="text-gray-400">1/7</span>
-                )}
-              </p>
-            </div>
-          </div>
-        </Card>
-      </div>
-
-      {/* Quick Access to Use Cases */}
-
-      {/* Main Content Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      {/* Main Content */}
+      <div className="max-w-7xl mx-auto px-8 py-8 space-y-8">
         
-        {/* Estado del Sistema */}
-        <Card>
-          <Card.Header>
-            <h2 className="text-xl font-bold text-green-700 flex items-center gap-2">
-              <span className="inline-block w-5 h-5 bg-green-500 rounded-full mr-1"></span>
-              Estado del Sistema
-            </h2>
-          </Card.Header>
-          <Card.Body>
-            <div className="space-y-3">
-              <div className="flex items-center justify-between p-4 bg-green-50 rounded-lg">
-                <div className="flex items-center gap-3">
-                  <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
-                  <span className="font-medium text-gray-900">Backend API</span>
-                </div>
-                <Badge variant="success">Conectado</Badge>
-              </div>
-              <div className="flex items-center justify-between p-4 bg-blue-50 rounded-lg">
-                <div className="flex items-center gap-3">
-                  <div className="w-3 h-3 bg-blue-500 rounded-full animate-pulse"></div>
-                  <span className="font-medium text-gray-900">Base de Datos</span>
-                </div>
-                <Badge variant="primary">Operativa</Badge>
-              </div>
-              <div className="flex items-center justify-between p-4 bg-purple-50 rounded-lg">
-                <div className="flex items-center gap-3">
-                  <div className="w-3 h-3 bg-purple-500 rounded-full animate-pulse"></div>
-                  <span className="font-medium text-gray-900">Gráficos Nivo</span>
-                </div>
-                <Badge variant="primary">Funcionando</Badge>
-              </div>
-            </div>
-          </Card.Body>
-        </Card>
-      </div>
+        {/* Métricas Principales */}
+        <DashboardMetrics metrics={data.metrics} />
 
-      {/* Progress Section */}
-
-      {/* Modal de Información */}
-      <Modal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        title="Información del Sistema"
-        size="md"
-      >
-        <div className="space-y-4">
-          <div>
-            <h4 className="font-semibold text-gray-900 mb-2">Estado Actual:</h4>
-            <p className="text-gray-600 text-sm">
-              Sistema refactorizado con arquitectura modular por casos de uso. El caso de Patrones Horarios está completamente funcional.
-            </p>
-          </div>
+        {/* Gráficos Principales - Grid 2x2 */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           
-          <div className="bg-blue-50 p-4 rounded-lg">
-            <h4 className="font-semibold text-blue-900 mb-2">Refactorización Completada:</h4>
-            <ul className="list-disc list-inside text-sm text-blue-800 space-y-1">
-              <li>Backend con estructura features/casos/*</li>
-              <li>Frontend con estructura features/casos/*</li>
-              <li>React Router v6 configurado</li>
-              <li>Caso Horarios completamente funcional</li>
-              <li>API endpoints nuevos: /api/v1/casos/horarios/*</li>
-              <li>Compatibilidad con endpoints antiguos mantenida</li>
-            </ul>
+          {/* Ventas en el Tiempo */}
+          <div className="lg:col-span-2">
+            <SalesOverTimeChart data={data.salesOverTime} />
           </div>
 
-          <div className="bg-green-50 p-4 rounded-lg">
-            <h4 className="font-semibold text-green-900 mb-2">Próximos Pasos:</h4>
-            <ul className="list-disc list-inside text-sm text-green-800 space-y-1">
-              <li>Implementar caso de Control de Caducidad</li>
-              <li>Implementar los 5 casos restantes</li>
-              <li>Agregar sistema de filtros global</li>
-              <li>Implementar exportación de datos</li>
-            </ul>
-          </div>
+          {/* Distribución Horaria */}
+          <HourlyDistributionChart data={data.hourlyDistribution} />
 
-          <div className="flex justify-end gap-3">
-            <Button variant="outline" onClick={() => setIsModalOpen(false)}>
-              Cerrar
-            </Button>
-            <Button variant="primary" onClick={() => {
-              setIsModalOpen(false)
-              navigate('/casos/horarios')
-            }}>
-              Ver Caso Horarios
-            </Button>
+          {/* Métodos de Pago */}
+          <PaymentMethodsChart data={data.paymentMethods} />
+
+          {/* Top Productos */}
+          <div className="lg:col-span-2">
+            <TopProductsChart data={data.topProducts} />
           </div>
         </div>
-      </Modal>
+
+        {/* Accesos Rápidos */}
+        <QuickAccessGrid onNavigate={(path) => navigate(path)} />
+
+        {/* Alertas e Insights */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {/* Alerta Crítica */}
+          {data.alerts?.critical && (
+            <div className="bg-red-50 border-2 border-red-200 rounded-xl p-6">
+              <div className="flex items-start gap-3">
+                <div>
+                  <h3 className="font-bold text-red-900 mb-2">Alerta Crítica</h3>
+                  <p className="text-sm text-red-700">{data.alerts.critical}</p>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Oportunidad */}
+          {data.alerts?.opportunity && (
+            <div className="bg-green-50 border-2 border-green-200 rounded-xl p-6">
+              <div className="flex items-start gap-3">
+                <div>
+                  <h3 className="font-bold text-green-900 mb-2">Oportunidad</h3>
+                  <p className="text-sm text-green-700">{data.alerts.opportunity}</p>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Tendencia */}
+          {data.alerts?.trend && (
+            <div className="bg-blue-50 border-2 border-blue-200 rounded-xl p-6">
+              <div className="flex items-start gap-3">
+                <div>
+                  <h3 className="font-bold text-blue-900 mb-2">Tendencia</h3>
+                  <p className="text-sm text-blue-700">{data.alerts.trend}</p>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
     </div>
-  )
-}
+  );
+};

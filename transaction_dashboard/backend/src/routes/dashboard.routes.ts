@@ -29,6 +29,16 @@ dashboardRoutes.get('/overview', async (req: Request, res: Response) => {
   }
 })
 
+dashboardRoutes.get('/analytics', async (req: Request, res: Response) => {
+  try {
+    const { dashboardController } = await import('../controllers/dashboard.controller')
+    return dashboardController.getAnalytics(req, res)
+  } catch (error) {
+    console.error('Error importing dashboard controller:', error)
+    res.status(500).json({ error: 'Internal server error' })
+  }
+})
+
 // ===================================
 // TRANSACTION ANALYSIS ROUTES  
 // ===================================

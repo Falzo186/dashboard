@@ -140,6 +140,43 @@ class DashboardController {
       })
     }
   }
+
+   async getOverview(_req: Request, res: Response): Promise<void> {
+    try {
+      const overview = await dashboardService.getDashboardOverview();
+      
+      res.json({
+        success: true,
+        data: overview,
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Error en getOverview:', error);
+      res.status(500).json({
+        success: false,
+        error: error instanceof Error ? error.message : 'Error desconocido',
+        timestamp: new Date().toISOString()
+      });
+    }
+  }
+
+  async getAnalytics(_req: Request, res: Response): Promise<void> {
+  try {
+    const analytics = await dashboardService.getDashboardAnalytics();
+    res.json({
+      success: true,
+      data: analytics,
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    console.error('Error en getAnalytics:', error);
+    res.status(500).json({
+      success: false,
+      error: error instanceof Error ? error.message : 'Error desconocido',
+      timestamp: new Date().toISOString()
+    });
+  }
+}
 }
 
 export const dashboardController = new DashboardController()
