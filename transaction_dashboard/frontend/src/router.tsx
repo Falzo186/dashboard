@@ -9,6 +9,7 @@ import { ClientesPage } from './features/casos/clientes'
 import { InventarioPage } from './features/casos/inventario/pages/InventarioPage'
 import { PagosPage } from './features/casos/pagos'
 import { DevolucionesPage } from './features/casos/devoluciones'
+import { DescuentosPage } from './features/casos/descuentos/pages/DescuentosPage'
 
 export const router = createBrowserRouter([
   {
@@ -50,6 +51,10 @@ export const router = createBrowserRouter([
           {
             path: 'Devoluciones',
             element: <DevolucionesPage />
+          },
+          {
+            path: 'descuentos',
+            element: <DescuentosPage />
           }
         ],
       },

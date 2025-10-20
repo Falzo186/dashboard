@@ -45,7 +45,7 @@ export const useProductosMasMovidos = () => {
     queryFn: async () => {
   // ...existing code...
       const response = await apiClient.get('/casos/inventario/productos-movidos', {
-        timeout: 60000 // 60 segundos
+        timeout: 120000 // 120 segundos
       });
   // ...existing code...
       return response.data.data;
@@ -138,7 +138,7 @@ export const useRefreshVistas = () => {
     mutationFn: async () => {
   // ...existing code...
       const response = await apiClient.post('/casos/inventario/refresh-vistas', {}, {
-        timeout: 180000 // 3 minutos de timeout
+        timeout: 240000 // 4 minutos de timeout
       });
   // ...existing code...
       return response.data;

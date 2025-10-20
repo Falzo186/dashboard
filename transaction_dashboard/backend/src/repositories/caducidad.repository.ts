@@ -1,7 +1,3 @@
-// backend/src/repositories/caducidad.repository.ts
-// Repository para el caso de uso: Control de Caducidad
-// ⚠️ IMPORTANTE: Este archivo va en backend/src/repositories/ (NO en features/casos/caducidad/)
-
 import { PrismaClient } from '@prisma/client';
 
 // Tipos inline - NO usar carpeta types/

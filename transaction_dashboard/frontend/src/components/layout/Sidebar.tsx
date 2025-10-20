@@ -64,6 +64,13 @@ export function Sidebar() {
       color: 'bg-red-500',
       enabled: true,
       path: '/casos/devoluciones'
+    },
+    {
+      id: 'caso8',
+      name: 'Análisis de Descuentos',
+      color: 'bg-teal-500',
+      enabled: true,
+      path: '/casos/descuentos'
     }
   ]
 
@@ -258,9 +265,7 @@ export function Sidebar() {
               )
             })}
           </ul>
-        </nav>
-
-        {/* ...existing code... */}
+        </nav>       
       </div>
     </aside>
   )

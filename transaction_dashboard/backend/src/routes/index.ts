@@ -12,6 +12,7 @@ import { clientesRoutes } from './clientes.routes';
 import { inventarioRoutes } from './inventario.routes';
 import pagosRoutes from './pagos.routes';
 import { devolucionesRoutes } from './devoluciones.routes';
+import { descuentosRoutes } from './descuentos.routes';
 
 const router = Router();
 
@@ -54,6 +55,9 @@ router.use(`${apiPrefix}/${apiVersion}/casos/pagos`, pagosRoutes);
 // CASO 7: Control Devoluciones ⏸️ 
 router.use(`${apiPrefix}/${apiVersion}/casos/devoluciones`, devolucionesRoutes);
 
+// CASO 8: Descuentos ⏸️
+router.use(`${apiPrefix}/${apiVersion}/casos/descuentos`, descuentosRoutes);
+
 // ===================================
 // API INFO ROUTE
 // ===================================
@@ -71,7 +75,8 @@ router.get(`${apiPrefix}`, (_req, res) => {
         clientes: `${apiPrefix}/${apiVersion}/casos/clientes`, // ⏸️ Futuro
         inventario: `${apiPrefix}/${apiVersion}/casos/inventario`, // ⏸️ Futuro
         pagos: `${apiPrefix}/${apiVersion}/casos/pagos`, // ⏸️ Futuro
-        devoluciones: `${apiPrefix}/${apiVersion}/casos/devoluciones` // ⏸️ Futuro
+        devoluciones: `${apiPrefix}/${apiVersion}/casos/devoluciones`, // ⏸️ Futuro
+        descuentos: `${apiPrefix}/${apiVersion}/casos/descuentos` // ⏸️ Futuro
       }
     },
     documentation: `${apiPrefix}/docs`,
