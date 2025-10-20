@@ -10,6 +10,7 @@ import { InventarioPage } from './features/casos/inventario/pages/InventarioPage
 import { PagosPage } from './features/casos/pagos'
 import { DevolucionesPage } from './features/casos/devoluciones'
 import { DescuentosPage } from './features/casos/descuentos/pages/DescuentosPage'
+import { EmpleadosPage } from './features/casos/empleados'
 
 export const router = createBrowserRouter([
   {
@@ -55,6 +56,11 @@ export const router = createBrowserRouter([
           {
             path: 'descuentos',
             element: <DescuentosPage />
+          }
+          ,
+          {
+            path: 'empleados',
+            element: <EmpleadosPage />
           }
         ],
       },

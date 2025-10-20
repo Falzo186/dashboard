@@ -71,6 +71,13 @@ export function Sidebar() {
       color: 'bg-teal-500',
       enabled: true,
       path: '/casos/descuentos'
+    },
+    {
+      id: 'caso9',
+      name: 'Identificación de Empleados',
+      color: 'bg-cyan-500',
+      enabled: true,
+      path: '/casos/empleados'
     }
   ]
 

@@ -13,6 +13,7 @@ import { inventarioRoutes } from './inventario.routes';
 import pagosRoutes from './pagos.routes';
 import { devolucionesRoutes } from './devoluciones.routes';
 import { descuentosRoutes } from './descuentos.routes';
+import { empleadosRoutes } from './empleados.routes';
 
 const router = Router();
 
@@ -57,6 +58,8 @@ router.use(`${apiPrefix}/${apiVersion}/casos/devoluciones`, devolucionesRoutes);
 
 // CASO 8: Descuentos ⏸️
 router.use(`${apiPrefix}/${apiVersion}/casos/descuentos`, descuentosRoutes);
+// CASO 9: Identificación Empleados ✅
+router.use(`${apiPrefix}/${apiVersion}/casos/empleados`, empleadosRoutes);
 
 // ===================================
 // API INFO ROUTE

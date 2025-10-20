@@ -1,0 +1,7 @@
+export { EmpleadosMetrics } from './EmpleadosMetrics'
+export { EmpleadosTable } from './EmpleadosTable'
+export { EmpleadosChart } from './EmpleadosChart'
+export { EmpleadosKPICards } from './EmpleadosKPICards'
+export { EmpleadosSalesDistribution } from './EmpleadosSalesDistribution'
+export { EmpleadosPerformanceGrid } from './EmpleadosPerformanceGrid'
+export { EmpleadosDetailedTable } from './EmpleadosDetailedTable'
