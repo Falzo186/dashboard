@@ -23,6 +23,15 @@ export const HourlyDistributionChart: React.FC<Props> = ({ data }) => {
     );
   }
 
+  const formatNumber = (value: any) => {
+    const n = Number(value ?? 0);
+    if (Number.isNaN(n)) return String(value);
+    const abs = Math.abs(n);
+    if (abs >= 1_000_000) return `${(n / 1_000_000).toFixed(1).replace(/\.0$/, '')}M`;
+    if (abs >= 1_000) return `${(n / 1_000).toFixed(1).replace(/\.0$/, '')}k`;
+    return String(n);
+  };
+
   return (
     <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
       <div className="mb-4">
@@ -66,6 +75,8 @@ export const HourlyDistributionChart: React.FC<Props> = ({ data }) => {
             legendPosition: 'middle',
             legendOffset: -50
           }}
+          // desactivar las etiquetas por defecto; usaremos una capa custom
+          enableLabel={false}
           labelSkipWidth={12}
           labelSkipHeight={12}
           labelTextColor={{
@@ -81,6 +92,33 @@ export const HourlyDistributionChart: React.FC<Props> = ({ data }) => {
               Porcentaje: <strong>{data.percentage}%</strong>
             </div>
           )}
+          // capa custom: dibuja las etiquetas formateadas rotadas verticalmente en el centro de cada barra
+          layers={[
+            'grid',
+            'axes',
+            'bars',
+            ({ bars }: any) => (
+              <g key="custom-bar-labels">
+                {bars.map((bar: any) => {
+                  const value = bar.data.transactions ?? bar.data.value ?? 0;
+                  const x = bar.x + bar.width / 2;
+                  const y = bar.y + bar.height / 2;
+                  return (
+                    <text
+                      key={bar.key}
+                      transform={`translate(${x}, ${y}) rotate(-90)`}
+                      textAnchor="middle"
+                      dominantBaseline="central"
+                      style={{ fontSize: 11, fill: '#6b4f3f', fontWeight: 600 }}
+                    >
+                      {formatNumber(value)}
+                    </text>
+                  );
+                })}
+              </g>
+            ),
+            'legends'
+          ]}
           role="application"
         />
       </div>
