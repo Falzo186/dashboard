@@ -10,12 +10,13 @@ import { DistribucionMensualChart } from '../components/DistribucionMensualChart
 import { TopProductosTable } from '../components/TopProductosTable';
 import { CategoriasChart } from '../components/CategoriasChart';
 import { ImpactoMargenCard } from '../components/ImpactoMargenCard';
+import { DESCUENTOS_CONFIG } from '../config';
 
 export const DescuentosPage = () => {
   // Hooks para obtener datos
   const metricsQuery = useDescuentosMetrics();
   const distribucionQuery = useDistribucionMensual();
-  const topProductosQuery = useTopProductos(15);
+  const topProductosQuery = useTopProductos(DESCUENTOS_CONFIG.TOP_PRODUCTOS_PAGE_LIMIT);
   const categoriasQuery = usePorCategoria();
   const impactoQuery = useImpactoMargen();
 
@@ -48,7 +49,7 @@ export const DescuentosPage = () => {
   if (isError) {
     return (
       <div className="flex flex-col items-center justify-center h-screen space-y-4">
-        <div className="text-red-500 text-6xl">⚠️</div>
+        <div className="text-red-500 text-6xl">!</div>
         <p className="text-red-600 font-medium text-lg">Error al cargar los datos</p>
         <button
           onClick={() => {
@@ -99,9 +100,9 @@ export const DescuentosPage = () => {
       <div className="bg-blue-50 border-l-4 border-blue-500 p-4 rounded">
         <h3 className="font-semibold text-blue-900">KPIs Objetivo del Caso</h3>
         <ul className="text-sm text-blue-800 mt-2 space-y-1">
-          <li>✓ ROI de estrategia promocional {'>'} 300%</li>
-          <li>✓ Incremento volumen: +20% con {'<'} 8% reducción margen</li>
-          <li>✓ % transacciones con descuento objetivo: 25-35%</li>
+          <li>ROI de estrategia promocional {'>'} 300%</li>
+          <li>Incremento volumen: +20% con {'<'} 8% reducción margen</li>
+          <li>% transacciones con descuento objetivo: 25-35%</li>
         </ul>
       </div>
 

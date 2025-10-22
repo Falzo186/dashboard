@@ -1,5 +1,6 @@
 import { ResponsiveBar } from '@nivo/bar';
 import type { DescuentoPorCategoria } from '../types';
+import { DESCUENTOS_CONFIG } from '../config';
 
 interface Props {
   data: DescuentoPorCategoria[];
@@ -16,7 +17,9 @@ export const CategoriasChart = ({ data }: Props) => {
   }
 
   const chartData = data.map(item => ({
-    categoria: item.categoria.length > 20 ? item.categoria.substring(0, 20) + '...' : item.categoria,
+    categoria: item.categoria.length > DESCUENTOS_CONFIG.MAX_CATEGORIA_NAME_LENGTH 
+      ? item.categoria.substring(0, DESCUENTOS_CONFIG.MAX_CATEGORIA_NAME_LENGTH) + '...' 
+      : item.categoria,
     'Detalles': parseInt(item.detalles_con_descuento),
     'Productos': parseInt(item.productos_unicos)
   }));

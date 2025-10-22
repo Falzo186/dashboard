@@ -53,9 +53,9 @@ export const DescuentosMetricsComponent = ({ data }: Props) => {
         <div className="border-t pt-4 mt-4">
           <p className="text-xs font-semibold mb-2">KPIs Objetivo del Caso:</p>
           <div className="grid grid-cols-3 gap-2 text-xs">
-            <div>✓ ROI {'>'} 300%</div>
-            <div>✓ Volumen +20%</div>
-            <div>✓ Meta: 25-35%</div>
+            <div>ROI {'>'} 300%</div>
+            <div>Volumen +20%</div>
+            <div>Meta: 25-35%</div>
           </div>
         </div>
       </div>

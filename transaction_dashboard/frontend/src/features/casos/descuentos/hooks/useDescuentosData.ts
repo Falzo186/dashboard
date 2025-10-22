@@ -10,6 +10,7 @@ import type {
   AnalisisCompleto
 } from '../types';
 import apiClient from '@/services/api/client';
+import { DESCUENTOS_CONFIG } from '../config';
 
 export const useDescuentosMetrics = () => {
   return useQuery<DescuentosMetrics>({
@@ -18,8 +19,8 @@ export const useDescuentosMetrics = () => {
       const response = await apiClient.get('/casos/descuentos/metrics');
       return response.data.data;
     },
-    staleTime: 5 * 60 * 1000,
-    retry: 2
+    staleTime: DESCUENTOS_CONFIG.QUERY_STALE_TIME,
+    retry: DESCUENTOS_CONFIG.QUERY_RETRY_COUNT
   });
 };
 
@@ -30,20 +31,20 @@ export const useDistribucionMensual = () => {
       const response = await apiClient.get('/casos/descuentos/distribucion-mensual');
       return response.data.data;
     },
-    staleTime: 5 * 60 * 1000,
-    retry: 2
+    staleTime: DESCUENTOS_CONFIG.QUERY_STALE_TIME,
+    retry: DESCUENTOS_CONFIG.QUERY_RETRY_COUNT
   });
 };
 
-export const useTopProductos = (limit: number = 20) => {
+export const useTopProductos = (limit: number = DESCUENTOS_CONFIG.TOP_PRODUCTOS_DEFAULT_LIMIT) => {
   return useQuery<ProductoConDescuento[]>({
     queryKey: ['descuentos', 'top-productos', limit],
     queryFn: async () => {
       const response = await apiClient.get(`/casos/descuentos/top-productos?limit=${limit}`);
       return response.data.data;
     },
-    staleTime: 5 * 60 * 1000,
-    retry: 2
+    staleTime: DESCUENTOS_CONFIG.QUERY_STALE_TIME,
+    retry: DESCUENTOS_CONFIG.QUERY_RETRY_COUNT
   });
 };
 
@@ -54,8 +55,8 @@ export const usePorCategoria = () => {
       const response = await apiClient.get('/casos/descuentos/por-categoria');
       return response.data.data;
     },
-    staleTime: 5 * 60 * 1000,
-    retry: 2
+    staleTime: DESCUENTOS_CONFIG.QUERY_STALE_TIME,
+    retry: DESCUENTOS_CONFIG.QUERY_RETRY_COUNT
   });
 };
 
@@ -66,8 +67,8 @@ export const useImpactoMargen = () => {
       const response = await apiClient.get('/casos/descuentos/impacto-margen');
       return response.data.data;
     },
-    staleTime: 5 * 60 * 1000,
-    retry: 2
+    staleTime: DESCUENTOS_CONFIG.QUERY_STALE_TIME,
+    retry: DESCUENTOS_CONFIG.QUERY_RETRY_COUNT
   });
 };
 
@@ -78,8 +79,8 @@ export const usePorPromocion = () => {
       const response = await apiClient.get('/casos/descuentos/por-promocion');
       return response.data.data;
     },
-    staleTime: 5 * 60 * 1000,
-    retry: 2
+    staleTime: DESCUENTOS_CONFIG.QUERY_STALE_TIME,
+    retry: DESCUENTOS_CONFIG.QUERY_RETRY_COUNT
   });
 };
 
@@ -88,11 +89,11 @@ export const useAnalisisCompleto = () => {
     queryKey: ['descuentos', 'analisis-completo'],
     queryFn: async () => {
       const response = await apiClient.get('/casos/descuentos/analisis-completo', {
-        timeout: 120000
+        timeout: DESCUENTOS_CONFIG.ANALISIS_COMPLETO_TIMEOUT
       });
       return response.data.data;
     },
-    staleTime: 5 * 60 * 1000,
-    retry: 2
+    staleTime: DESCUENTOS_CONFIG.QUERY_STALE_TIME,
+    retry: DESCUENTOS_CONFIG.QUERY_RETRY_COUNT
   });
 };
