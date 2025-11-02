@@ -11,6 +11,7 @@ import { DevolucionesPage } from './features/casos/devoluciones'
 import { DescuentosPage } from './features/casos/descuentos/pages/DescuentosPage'
 import { EmpleadosPage } from './features/casos/empleados'
 import { VariantesPage } from './features/casos/variantes/pages/VariantesPage'
+import { RecomendacionesPage } from './features/casos/recomendaciones'
 import { DashboardHomePage } from './features/dashboard/pages/DashboardHomePage'
 
 export const router = createBrowserRouter([
@@ -64,6 +65,11 @@ export const router = createBrowserRouter([
           {
             path: 'variantes',
             element: <VariantesPage />
+          }
+          ,
+          {
+            path: 'recomendaciones',
+            element: <RecomendacionesPage />
           }
         ],
       },

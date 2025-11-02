@@ -39,9 +39,9 @@
     <meta name="theme-color" content="#3b82f6" />
     <meta name="color-scheme" content="light" />
     
-    <!-- Performance Hints -->
-    <link rel="dns-prefetch" href="//localhost:3001" />
-    <link rel="preconnect" href="http://localhost:3001" />
+  <!-- Performance Hints (apuntan al backend configurado por Vite) -->
+  <link rel="dns-prefetch" href="//%VITE_API_URL%" />
+  <link rel="preconnect" href="%VITE_API_URL%" />
     
     <!-- Title -->
     <title>Transaction Analytics Dashboard</title>
@@ -154,8 +154,8 @@
       if (window.location.hostname === 'localhost') {
         console.log('%c🚀 Transaction Analytics Dashboard', 'color: #3b82f6; font-size: 16px; font-weight: bold;');
         console.log('%cDevelopment Mode', 'color: #10b981; font-weight: bold;');
-        console.log('Frontend: http://localhost:3000');
-        console.log('Backend: http://localhost:3001');
+  console.log('Frontend: http://localhost:3000');
+  console.log('Backend: %VITE_API_URL%');
         console.log('Environment:', 'development');
         console.log('%cEsperando a que React se monte...', 'color: #f59e0b;');
       }

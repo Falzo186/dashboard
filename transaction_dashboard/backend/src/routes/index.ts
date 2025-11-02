@@ -15,6 +15,7 @@ import { devolucionesRoutes } from './devoluciones.routes';
 import { descuentosRoutes } from './descuentos.routes';
 import { empleadosRoutes } from './empleados.routes';
 import { variantesRoutes } from './variantes.routes';
+import { recomendacionesRoutes } from './recomendaciones.routes';
 
 const router = Router();
 
@@ -65,6 +66,9 @@ router.use(`${apiPrefix}/${apiVersion}/casos/empleados`, empleadosRoutes);
 
 // CASO 10: Análisis de Variantes
 router.use(`${apiPrefix}/${apiVersion}/casos/variantes`, variantesRoutes);
+
+// CASO 11: Sistema de Recomendación - Canasta de Mercado
+router.use(`${apiPrefix}/${apiVersion}/casos/recomendaciones`, recomendacionesRoutes);
 
 
 // ===================================

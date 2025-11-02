@@ -5,7 +5,7 @@ import path from 'path'
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [react()],
+  plugins: [react() as any],
   
   // Configuración de paths absolutos para imports con @/
   resolve: {
@@ -31,7 +31,7 @@ export default defineConfig({
     // Proxy para el backend (opcional, ya tenemos CORS configurado)
     proxy: {
       '/api': {
-        target: 'http://localhost:3001',
+        target: process.env.VITE_API_URL || 'http://localhost:3001',
         changeOrigin: true,
         secure: false,
       },

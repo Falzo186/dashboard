@@ -86,6 +86,13 @@ export function Sidebar() {
       enabled: true,
       path: '/casos/variantes'
     },
+    {
+      id: 'caso11',
+      name: 'Canasta de Mercado',
+      color: 'bg-rose-500',
+      enabled: true,
+      path: '/casos/recomendaciones'
+    },
   ]
 
   const isActive = (path: string) => {

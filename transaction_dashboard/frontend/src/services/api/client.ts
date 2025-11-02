@@ -12,6 +12,9 @@ const apiClient = axios.create({
   timeout: 120000, // 120 segundos
 })
 
+// Increase default timeout for long-running analytics endpoints (helps debugging)
+apiClient.defaults.timeout = 300000 // 5 minutes
+
 // Interceptor para requests
 apiClient.interceptors.request.use(
   (config) => {

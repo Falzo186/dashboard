@@ -95,10 +95,13 @@ app.use((error: Error, _req: Request, res: Response, _next: NextFunction) => {
   
   const statusCode = (error as any).status || (error as any).statusCode || 500
   
+  // En desarrollo incluir stack y mensaje detallado para depuración
+  const isDev = process.env.NODE_ENV === 'development'
   res.status(statusCode).json({
     success: false,
-    error: 'Internal server error',
-    message: process.env.NODE_ENV === 'development' ? error.message : 'Something went wrong',
+    error: isDev ? error.message : 'Internal server error',
+    message: isDev ? (error as any).message : 'Something went wrong',
+    stack: isDev ? (error as any).stack : undefined,
     timestamp: new Date().toISOString()
   })
 })

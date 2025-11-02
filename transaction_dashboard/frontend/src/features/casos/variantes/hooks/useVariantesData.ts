@@ -9,7 +9,9 @@ import type {
   PriceVariation 
 } from '../types';
 
-const API_BASE = 'http://localhost:3001/api/v1/casos/variantes';
+const API_URL = (import.meta as any).env.VITE_API_URL || 'http://localhost:3001';
+const API_VERSION = (import.meta as any).env.VITE_API_VERSION || 'v1';
+const API_BASE = `${API_URL}/api/${API_VERSION}/casos/variantes`;
 
 /**
  * Hook para obtener métricas generales de variantes

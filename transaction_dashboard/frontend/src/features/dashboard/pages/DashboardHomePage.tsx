@@ -38,7 +38,7 @@ export const DashboardHomePage: React.FC = () => {
               No se pudo conectar con el backend. Verifica que el servidor esté corriendo.
             </p>
             <code className="text-sm bg-red-50 px-3 py-1 rounded">
-              http://localhost:3001
+              {(import.meta as any).env.VITE_API_URL || 'http://localhost:3001'}
             </code>
           </div>
           <button
