@@ -46,6 +46,39 @@ clientesRoutes.get('/segmentation', clientesController.getSegmentation)
 // Análisis de recencia (última compra)
 clientesRoutes.get('/recency', clientesController.getRecencyAnalysis)
 
+// ===================================
+// NUEVA FUNCIÓN: Clasificación de Ticket -> Tipo de Cliente
+// ===================================
+// GET /api/v1/casos/clientes/tickets?limit=100
+clientesRoutes.get('/tickets', async (_req, res) => {
+	const controller = await import('../controllers/clientes_classification.controller')
+	return controller.clientesClassificationController.listTickets(_req, res)
+})
+
+// GET /api/v1/casos/clientes/tickets/:id/details
+clientesRoutes.get('/tickets/:id/details', async (req, res) => {
+  const controller = await import('../controllers/clientes_classification.controller')
+  return controller.clientesClassificationController.getTicketDetails(req, res)
+})
+
+// POST /api/v1/casos/clientes/predict/:transactionId
+clientesRoutes.post('/predict/:transactionId', async (_req, res) => {
+	const controller = await import('../controllers/clientes_classification.controller')
+	return controller.clientesClassificationController.predictTransaction(_req, res)
+})
+
+// POST /api/v1/casos/clientes/retrain
+clientesRoutes.post('/retrain', async (_req, res) => {
+	const controller = await import('../controllers/clientes_classification.controller')
+	return controller.clientesClassificationController.retrain(_req, res)
+})
+
+// GET /api/v1/casos/clientes/predictions?limit=50
+clientesRoutes.get('/predictions', async (req, res) => {
+  const controller = await import('../controllers/clientes_classification.controller')
+  return controller.clientesClassificationController.listPredictions(req, res)
+})
+
 // GET /api/v1/casos/clientes/spending-ranges
 // Distribución por rango de gasto total
 clientesRoutes.get('/spending-ranges', clientesController.getSpendingRanges)

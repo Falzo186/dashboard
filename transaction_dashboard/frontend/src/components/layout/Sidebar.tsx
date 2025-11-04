@@ -93,6 +93,13 @@ export function Sidebar() {
       enabled: true,
       path: '/casos/recomendaciones'
     },
+    {
+      id: 'caso12',
+      name: 'Clasificación Clientes',
+      color: 'bg-emerald-500',
+      enabled: true,
+      path: '/casos/clientes/classification'
+    },
   ]
 
   const isActive = (path: string) => {

@@ -37,6 +37,13 @@ export const QuickAccessGrid: React.FC<Props> = ({ onNavigate }) => {
       bgColor: 'bg-purple-50'
     },
     {
+      title: 'Clasificación Clientes',
+      description: 'Clasificar ticket por tipo de cliente (Caso 12)',
+      path: '/casos/clientes/classification',
+      color: 'from-violet-500 to-violet-600',
+      bgColor: 'bg-violet-50'
+    },
+    {
       title: 'Seguimiento Inventario',
       description: 'Control de stock y movimientos',
       path: '/casos/inventario',

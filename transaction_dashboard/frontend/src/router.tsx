@@ -1,5 +1,6 @@
 // frontend/src/router.tsx
 import { createBrowserRouter, Navigate } from 'react-router-dom'
+import { ClientesClassificationPage } from './features/casos/clientes_classification/pages/ClientesClassificationPage'
 import { MainLayout } from './components/layout/MainLayout'
 import { HorariosPage } from './features/casos/horarios'
 import { CaducidadPage } from './features/casos/caducidad/pages/CaducidadPage'
@@ -41,6 +42,10 @@ export const router = createBrowserRouter([
           {
             path: 'clientes',
             element: <ClientesPage />
+          },
+          {
+            path: 'clientes/classification',
+            element: <ClientesClassificationPage />
           },
           {
             path: 'inventario',
