@@ -89,8 +89,10 @@ export const ClientesClassificationPage: React.FC = () => {
                 {isLoading && <tr><td colSpan={5}>Cargando...</td></tr>}
                 {tickets && tickets.map((t: any) => {
                   const pred = predictionsMap[String(t.id)]
-                  const icon = pred ? (
-                    pred.predicted_type === 'Niño' ? '🧒' : pred.predicted_type === 'Joven' ? '🧑' : pred.predicted_type === 'Adulto' ? '👨' : pred.predicted_type === 'Empresa' ? '🏢' : '🔎'
+                  // normalize Empresa -> Adulto for display
+                  const displayType = pred ? (pred.predicted_type === 'Empresa' ? 'Adulto' : pred.predicted_type) : null
+                  const icon = displayType ? (
+                    displayType === 'Niño' ? '🧒' : displayType === 'Joven' ? '🧑' : '�'
                   ) : '🔎'
                   return (
                     <tr key={t.id} className={`cursor-pointer hover:bg-gray-50 ${selected===t.id?'bg-indigo-50':''}`} onClick={() => { setSelected(t.id); fetchPrediction(t.id); fetchTicketDetails(t.id); setModalOpen(true) }}>
@@ -121,13 +123,13 @@ export const ClientesClassificationPage: React.FC = () => {
                 </h4>
                 <p className="text-sm text-gray-600 mt-2">Confianza: {Number(prediction.confidence).toFixed(2)}%</p>
                 {Number(prediction.confidence) < 60 && (
-                  <div className="mt-2 p-2 bg-yellow-50 border-l-4 border-yellow-400 text-sm text-yellow-800">Predicción incierta — la confianza es baja. Considera re-entrenar o revisar etiquetas.</div>
+                  <div className="mt-2 p-2 bg-yellow-50 border-l-4 border-yellow-400 text-sm text-yellow-800">Predicción incierta — requiere más datos.</div>
                 )}
-                {Number(prediction.confidence) >= 60 && Number(prediction.confidence) < 80 && (
+                {Number(prediction.confidence) >= 60 && Number(prediction.confidence) < 70 && (
                   <div className="mt-2 p-2 bg-yellow-50 border-l-4 border-yellow-400 text-sm text-yellow-800">Confianza moderada — use esta predicción como indicación, no como regla.</div>
                 )}
-                {Number(prediction.confidence) >= 80 && (
-                  <div className="mt-2 p-2 bg-green-50 border-l-4 border-green-400 text-sm text-green-800">Alta confianza — la clasificación es fiable.</div>
+                {Number(prediction.confidence) >= 70 && (
+                  <div className="mt-2 p-2 bg-green-50 border-l-4 border-green-400 text-sm text-green-800">Predicción segura</div>
                 )}
                 <p className="mt-2 text-sm text-gray-700">Explicación: {prediction.explanation || 'N/A'}</p>
 
@@ -189,7 +191,7 @@ export default ClientesClassificationPage
 
 // Helper: color class by confidence
 function getConfidenceColor(conf: number) {
-  if (conf >= 80) return 'bg-green-100 text-green-800'
+  if (conf >= 70) return 'bg-green-100 text-green-800'
   if (conf >= 60) return 'bg-yellow-100 text-yellow-800'
   return 'bg-red-100 text-red-800'
 }
@@ -200,7 +202,7 @@ const CircularGauge: React.FC<{ value: number; size?: number }> = ({ value, size
   const circumference = 2 * Math.PI * radius
   const pct = Math.max(0, Math.min(100, value))
   const dash = (pct / 100) * circumference
-  const color = pct >= 80 ? '#10B981' : pct >= 60 ? '#F59E0B' : '#EF4444'
+  const color = pct >= 70 ? '#10B981' : pct >= 60 ? '#F59E0B' : '#EF4444'
   return (
     <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
       <defs>

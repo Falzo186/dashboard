@@ -11,6 +11,7 @@ import psycopg2
 import pandas as pd
 
 MODEL_PATH = os.path.join(os.path.dirname(__file__), 'client_model.pkl')
+MODEL_V2_PATH = os.path.join(os.path.dirname(__file__), 'modelo_cliente_v2.pkl')
 
 
 def get_db_conn():
@@ -79,7 +80,11 @@ def predict(transaction_id: int):
 
     try:
         import joblib
-        obj = joblib.load(MODEL_PATH)
+        # Prefer v2 model if available
+        if os.path.exists(MODEL_V2_PATH):
+            obj = joblib.load(MODEL_V2_PATH)
+        else:
+            obj = joblib.load(MODEL_PATH)
         if not isinstance(obj, dict):
             return {'predicted_type': 'Desconocido', 'confidence': 0.0, 'probabilities': {}, 'explanation': 'Modelo con formato inesperado.'}
 
@@ -132,6 +137,10 @@ def predict(transaction_id: int):
                 explanation = 'Top feature indices: ' + ','.join([str(i) for i in top_idx])
         except Exception:
             explanation = ''
+
+        # normalize Empresa -> Adulto to match 3-class scheme
+        if pred_label == 'Empresa':
+            pred_label = 'Adulto'
 
         return {'predicted_type': str(pred_label), 'confidence': confidence, 'probabilities': prob_map, 'explanation': explanation}
     except Exception as e:

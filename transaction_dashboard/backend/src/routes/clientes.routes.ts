@@ -79,6 +79,12 @@ clientesRoutes.get('/predictions', async (req, res) => {
   return controller.clientesClassificationController.listPredictions(req, res)
 })
 
+// POST /api/v1/casos/clientes/predictions/import
+clientesRoutes.post('/predictions/import', async (req, res) => {
+	const controller = await import('../controllers/clientes_classification.controller')
+	return controller.clientesClassificationController.importPredictions(req, res)
+})
+
 // GET /api/v1/casos/clientes/spending-ranges
 // Distribución por rango de gasto total
 clientesRoutes.get('/spending-ranges', clientesController.getSpendingRanges)

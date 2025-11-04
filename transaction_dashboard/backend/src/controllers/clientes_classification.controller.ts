@@ -46,6 +46,16 @@ class ClientesClassificationController {
     }
   }
 
+  async importPredictions(req: Request, res: Response) {
+    try {
+      const result = await clientesClassificationService.importPredictionsFromCsv()
+      res.json(result)
+    } catch (error) {
+      console.error('Error in importPredictions:', error)
+      res.status(500).json({ success: false, error: error instanceof Error ? error.message : String(error) })
+    }
+  }
+
   async getTicketDetails(req: Request, res: Response) {
     try {
       const transactionId = parseInt(req.params.id)
