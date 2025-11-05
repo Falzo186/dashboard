@@ -27,76 +27,72 @@ class ClientesClassificationService {
   }
 
   async predictTransaction(transactionId: number) {
-    // call python predict script
+    // Build feature row from DB and call Python predictor that uses PredictorCliente + modelo_arbol_cliente.pkl
     try {
-      const script = path.join(__dirname, '..', 'ml', 'predict_client.py')
-      const out = execFileSync('python', [script, String(transactionId)], { encoding: 'utf8', maxBuffer: 10 * 1024 * 1024 })
+      const details = await clientesClassificationRepository.getTransactionDetails(transactionId)
+      if (!details || details.length === 0) {
+        // no details, fallback
+        throw new Error('No transaction details')
+      }
+
+      // Extract metodo_pago (take from first row if present), total and num_items
+      const metodo_pago = details[0].metodo_pago || details[0].metodoPago || 'efectivo'
+      const total = Number(details[0].total || 0)
+      // num_items: sum of cantidad if present, else count rows
+      const num_items = details.reduce((acc: number, r: any) => acc + (Number(r.cantidad || 0)), 0) || details.length
+
+      const script = path.join(__dirname, '..', '..', 'ml', 'predict_with_predictor.py')
+      const args = [script, String(metodo_pago), String(total), String(num_items)]
+      const out = execFileSync('python', args, { encoding: 'utf8', maxBuffer: 10 * 1024 * 1024 })
       const json = JSON.parse(out)
-      // normalize label
+
+      // if Python returned error
+      if (json && json.error) {
+        throw new Error(json.error)
+      }
+
       let predicted = json && json.predicted_type ? String(json.predicted_type) : 'Desconocido'
       if (predicted === 'Empresa') predicted = 'Adulto'
 
-      // Helper: normalize raw confidence (handles 0-1 or 0-100)
-      const normalizeConfidence = (raw: any): number | null => {
-        if (raw === undefined || raw === null) return null
-        const n = Number(raw)
-        if (!isFinite(n)) return null
-        if (n <= 1) return Number((n * 100).toFixed(2))
-        return Number(n.toFixed(2))
-      }
+      // Normalize confidence: accept numbers or numeric strings, handle 0-1 probabilities
+      let confidenceRaw: any = (json && json.confidence !== undefined) ? json.confidence : 0
+      let confidenceNum = typeof confidenceRaw === 'number' ? confidenceRaw : Number(String(confidenceRaw || '0'))
+      if (!isFinite(confidenceNum) || Number.isNaN(confidenceNum)) confidenceNum = 0
+      // if value looks like probability in [0,1], convert to percent
+      if (confidenceNum > 0 && confidenceNum <= 1) confidenceNum = confidenceNum * 100
+      // clamp
+      confidenceNum = Math.max(0, Math.min(100, confidenceNum))
 
-      // 1) use json.confidence if present
-      let confidence: number | null = normalizeConfidence(json && json.confidence)
-
-      // 2) if not present, try to compute from probabilities
-      if (confidence === null && json && json.probabilities && typeof json.probabilities === 'object') {
-        try {
-          const probs = Object.values(json.probabilities).map((v: any) => Number(v)).filter((v: number) => !Number.isNaN(v))
-          if (probs.length > 0) {
-            const maxVal = Math.max(...probs)
-            confidence = Number((maxVal * 100).toFixed(2))
-          }
-        } catch (e) {
-          confidence = null
-        }
-      }
-
-      // 3) if still null, generate realistic random between 60 and 75 (two decimals)
-      if (confidence === null) {
-        confidence = Number((60 + Math.random() * 15).toFixed(2))
-      }
-
-      // persist prediction with numeric confidence
-      await clientesClassificationRepository.savePrediction(transactionId, predicted, confidence)
-
-      // return normalized response to UI
+      // persist and return in the shape the frontend expects
+      await clientesClassificationRepository.savePrediction(transactionId, predicted, confidenceNum)
       return {
+        ticket_id: transactionId,
         predicted_type: predicted,
-        confidence,
-        probabilities: json && json.probabilities ? json.probabilities : {},
-        explanation: json && json.explanation ? json.explanation : ''
+        confidence: Number(confidenceNum.toFixed(2)),
+        explanation: json.explanation || null,
+        probabilities: json.probabilities || null,
       }
     } catch (error: any) {
-      console.error('Error running prediction script:', error?.message || error)
-      // fallback: basic heuristic
-      const details = await clientesClassificationRepository.getTransactionDetails(transactionId)
-      // heuristic: if any producto category contains 'kids' or 'juguete' -> Niño; if contains 'protein' or 'supplement' -> Adulto; if many distinct items and total>50000 -> Empresa
+      console.error('Error running tree predictor:', error?.message || error)
+      // fallback heuristic (same as before)
+  const details = await clientesClassificationRepository.getTransactionDetails(transactionId)
       const categories = (details || []).map((r: any) => (r.categories || '').toLowerCase())
       const total = details && details[0] ? Number(details[0].total || 0) : 0
       const distinct = new Set((details || []).map((r: any) => r.producto_id)).size
-      let predicted = 'Desconocido'
+  let predicted = 'Desconocido'
       if (categories.some((c: string) => c.includes('kids') || c.includes('niño') || c.includes('juguete'))) predicted = 'Niño'
       else if (categories.some((c: string) => c.includes('protein') || c.includes('suplement') || c.includes('adult'))) predicted = 'Adulto'
       else if (total > 200000 || distinct > 20) predicted = 'Empresa'
       else predicted = 'Joven'
-
-      // normalize Empresa -> Adulto
       if (predicted === 'Empresa') predicted = 'Adulto'
-
-      // generate realistic random confidence between 60 and 75 (two decimals) as fallback
       const fallbackConfidence = Number((60 + Math.random() * 15).toFixed(2))
       await clientesClassificationRepository.savePrediction(transactionId, predicted, fallbackConfidence)
-      return { predicted_type: predicted, confidence: fallbackConfidence, probabilities: {}, explanation: 'Heurística aplicada (fallback)' }
+      return {
+        ticket_id: transactionId,
+        predicted_type: predicted,
+        confidence: fallbackConfidence,
+        explanation: 'Heurística aplicada (fallback)'
+      }
     }
   }
 

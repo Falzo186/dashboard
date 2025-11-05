@@ -31,7 +31,7 @@ export class ClientesClassificationRepository {
   async getTransactionDetails(transactionId: number) {
     // Some schemas may not include all product columns (eg. brand). Select the common subset.
     const rows = await this.prisma.$queryRaw<any[]>`
-      SELECT td.transaction_id, td.producto_id, td.cantidad, p.product_name, p.categories, t.total, t.fecha_hora
+      SELECT td.transaction_id, td.producto_id, td.cantidad, p.product_name, p.categories, t.total, t.fecha_hora, t.metodo_pago
       FROM transaction_detail td
       INNER JOIN products p ON td.producto_id = p.id
       INNER JOIN transactions t ON td.transaction_id = t.id
