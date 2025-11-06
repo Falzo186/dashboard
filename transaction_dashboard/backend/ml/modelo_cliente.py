@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""
+""" ZAL: transaction_dashboard/backend/ml/
 modelo_cliente.py
 
 Entrena un DecisionTreeClassifier (scikit-learn) usando columnas:
